@@ -1,9 +1,9 @@
 import React from 'react';
 import Table from 'react-bootstrap/Table';
 import Container from 'react-bootstrap/Container';
-import { BasePQProps } from '../../types/interfaces';
+import { BasePQListProps } from '../../types/interfaces';
 
-const PQList: React.FC<BasePQProps> = ({pqs}) => {
+const PQList: React.FC<BasePQListProps> = ({pqs}) => {
 
     return (
         <>
@@ -20,7 +20,7 @@ const PQList: React.FC<BasePQProps> = ({pqs}) => {
                         {pqs ? (
                             pqs.map((pq, index) => (
                                 <tr key={index}>
-                                    <td>pq.pqref</td>
+                                    <td>{pq.pqref}</td>
                                     <td>{pq.due_oireachtas}</td>
                                     <td>{pq.question}</td>
                                 </tr>

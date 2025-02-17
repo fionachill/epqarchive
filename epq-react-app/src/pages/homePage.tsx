@@ -1,21 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import Header from "../components/header";
-import { BasePQListProps } from '../types/interfaces';
+import { BasePQProps } from '../types/interfaces';
 import PQList from "../components/pqList";
 import Container from "react-bootstrap/Container";
 import axios from 'axios';
 
-const HomePage: React.FC<BasePQListProps> = () => {
-    const [pqs, setPQs] = useState<BasePQListProps[]>([]);
+const HomePage: React.FC= () => {
+    const [pqs, setPQs] = useState<BasePQProps[]>([]);
 
     useEffect(() => {
         console.log("Fetching PQs");
-        const res = await axios
-        .get<BasePQListProps>(`http://localhost:3000/pqs`)
-        .then(res => {
-            setPQs(res.data);
-            }); 
-        }, []);
+        axios
+            .get(`http://localhost:3000/pqs`)
+            .then((res) => {
+                const pqs = res.data;
+                setPQs(pqs);
+        });
+    }, []);
 
 
 
