@@ -11,18 +11,20 @@ const PQList: React.FC<BasePQListProps> = ({pqs}) => {
                 <Table className="table-hover">
                     <thead>
                         <tr>
-                            <th className="col-sm-2">PQ Reference</th>
-                            <th className="col-sm-2">Due Date</th>
-                            <th className="col-sm-8">Question</th>
+                            <th className="col-sm-1">Department</th>
+                            <th className="col-sm-2">Topic</th>
+                            <th className="col-sm-7">Question</th>
+                            <th className="col-sm-2">Date</th>
                         </tr>
                     </thead>
                     <tbody>
                         {pqs ? (
                             pqs.map((pq, index) => (
                                 <tr key={index}>
-                                    <td>{pq.pqref}</td>
-                                    <td>{pq.due_oireachtas}</td>
-                                    <td>{pq.question}</td>
+                                    <td>{pq.question.to.showAs}</td>
+                                    <td>{pq.question.debateSection.showAs}</td>
+                                    <td>{pq.question.showAs}</td>
+                                    <td>{pq.question.date}</td>
                                 </tr>
                             ))
                         ) : ( 

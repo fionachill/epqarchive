@@ -5,3 +5,6 @@ This is a lightweight web application built using Vite + React TS that displays 
 Features:
 
 1) List of PQs displayed on home page
+
+
+Note: Companion API must be running in order to use this application. 
