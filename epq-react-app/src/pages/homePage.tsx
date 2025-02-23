@@ -4,23 +4,24 @@ import { BasePQProps } from '../types/interfaces';
 import PQList from "../components/pqList";
 import Container from "react-bootstrap/Container";
 
-const HomePage: React.FC= () => {
+
+const HomePage: React.FC = () => {
     const [pqs, setPQs] = useState<BasePQProps[]>([]);
-    
+
 
     useEffect(() => {
         console.log("Fetching PQs");
         fetch(
             `https://api.oireachtas.ie/v1/questions?limit=10&qtype=oral,written`
         )
-            .then((res) =>  res.json())
+            .then((res) => res.json())
             .then((json) => {
                 console.log(json);
                 return json.results;
             })
             .then((pqs) => {
                 setPQs(pqs);
-            });    
+            });
     }, []);
 
 
@@ -34,17 +35,14 @@ const HomePage: React.FC= () => {
     //             setPQs(pqs);
     //     });
     // }, []);
-
-
-
     return (
         <>
-            <Header/>
+            <Header />
             <Container>
                 <PQList pqs={pqs}></PQList>
             </Container>
-        </>  
+        </>
     );
-};
+}
 
 export default HomePage;

@@ -12,6 +12,7 @@ export interface BasePQListProps {
 
 
 export interface BasePQProps {
+    id?: string;                    // This has been added for the encoded URI
     question: {
         date: string;
         debateSection: {
