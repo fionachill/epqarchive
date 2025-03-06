@@ -27,8 +27,9 @@ const PQList: React.FC<BasePQListProps> = ({pqs}) => {
                             <th className="col-sm-2">Department</th>
                             <th className="col-sm-2">Topic</th>
                             <th className="col-sm-4">Question</th>
+                            <th className="col-sm-1">Type</th>
                             <th className="col-sm-2">Date</th>
-                            <th className="col-sm-2"></th>
+                            <th className="col-sm-1"></th> 
                         </tr>
                     </thead>
                     <tbody>
@@ -38,12 +39,13 @@ const PQList: React.FC<BasePQListProps> = ({pqs}) => {
                                     <td>{pq.question.to.showAs}</td>
                                     <td>{pq.question.debateSection.showAs}</td>
                                     <td>{pq.question.showAs}</td>
+                                    <td>{pq.question.questionType}</td>
                                     <td>{pq.question.date}</td>
                                     <td>
                                         <Link to={`/pqs/${pq.id}`}>
                                             <Button>More Information</Button>
                                         </Link>
-                                    </td>
+                                    </td>    
                                 </tr>
                             ))
                         ) : ( 

@@ -1,19 +1,17 @@
 import React, {useEffect} from "react";
 import Header from "../components/header";
 import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
 import { BasePQProps } from "../types/interfaces";
+import { DetailsProps } from "../types/interfaces";
 import { Base64 } from "js-base64";
 import { useParams } from "react-router-dom";
-const parser = new DOMParser();
-
-
+import axios from "axios";
 
 const PQDetailPage: React.FC = () => {
     const { id } = useParams();
     const [pq, setPQ] = React.useState<BasePQProps>();    
-  
+    const [details, setDetails] = React.useState<DetailsProps>();
+
     const decodeId = (id: string) => {
         return Base64.decode(id);
     };
@@ -22,13 +20,12 @@ const PQDetailPage: React.FC = () => {
         console.log("Fetching PQ");
         if (id) {
             const uri = decodeId(id);
-        //      console.log(uri);
             fetch(
                 `https://api.oireachtas.ie/v1/questions?qtype=oral,written&question_id=${uri}`
             )
                 .then((res) => res.json())
                 .then((json) => {
-                    console.log(json);
+                    // console.log(json);
                     return json.results[0];
                 })
                 .then((pq) => {
@@ -38,33 +35,35 @@ const PQDetailPage: React.FC = () => {
     }, [id]);
 
     useEffect(() => {
-        console.log("Fetching additional PQ data");
+        console.log("Contacting backend to fetch xml data");
         if (pq) {
-            const url = pq.question.debateSection.formats.xml.uri;
-            fetch(`${url}`, {
-                mode: 'no-cors',
-                credentials: "include"
-            })
-            .then ((response) => {
-                return response.text();
-            })
-            .then (xmlText => {
-                const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
-                console.log(xmlDoc);
-            })
+            const uri = pq.question.debateSection.formats.xml.uri;
+            console.log(uri);
+            try {
+                const response = axios.get(`/api/fetch-xml?url=${uri}`);
+                console.log(response);
+                response.then((response) => {
+                    setDetails(response.data);
+                });  
+            } catch (error) {
+                console.log(error);
+            }
         }
-    });
-
+    }, [pq]);
 
     return (
         <>
             <Header/>
             <Container fluid>
-                <h1>PQ Details go here</h1>
                 { pq ? (
                     <div>
                         <h3>Question</h3>
-                        <p>{pq.question.showAs}</p> 
+                        <p>{pq.question.showAs.substring(3)}</p>
+                            { details ? (
+                                <p>There are some details to be had</p>
+                                ) : (
+                                <p>Can't parse XML data</p>
+                            )} 
                     </div>
                 ) : (
                     <p>PQ data not found</p>
