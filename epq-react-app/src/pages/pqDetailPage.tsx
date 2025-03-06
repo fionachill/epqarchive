@@ -1,6 +1,9 @@
 import React, {useEffect} from "react";
 import Header from "../components/header";
 import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col"; 
+import ListGroup from "react-bootstrap/ListGroup";
 import { BasePQProps } from "../types/interfaces";
 import { DetailsProps } from "../types/interfaces";
 import { Base64 } from "js-base64";
@@ -55,20 +58,50 @@ const PQDetailPage: React.FC = () => {
         <>
             <Header/>
             <Container fluid>
-                { pq ? (
-                    <div>
-                        <h3>Question</h3>
-                        <p>{pq.question.showAs.substring(3)}</p>
-                            { details ? (
-                                <p>There are some details to be had</p>
-                                ) : (
-                                <p>Can't parse XML data</p>
-                            )} 
-                    </div>
-                ) : (
-                    <p>PQ data not found</p>
-                )
-                }
+                <Row>
+                    { pq ? (
+                        <div>
+                            <p>{pq.question.showAs.substring(3)}</p>
+                            <Row>
+                                { details ? (
+                                        <>
+                                            <Col>
+                                                <div>
+                                                    { 
+                                                        details?.speech?.map((speech, eId) => (
+                                                            <div key={eId}>
+                                                                <h2>{speech.from._}</h2>
+                                                                { 
+                                                                    speech?.p?.map((p, eId) => <p key={eId}>{p._}</p>)
+            
+                                                                }  
+                                                            </div>
+                                                        ))   
+                                                    }  
+                                                </div>
+                                            </Col>
+                                            <Col xs={3}>
+                                                <ListGroup>
+                                                    <ListGroup.Item><strong>Date:</strong> {pq.question.date}</ListGroup.Item>
+                                                    <ListGroup.Item><strong>Department:</strong> {pq.question.to.showAs}</ListGroup.Item>
+                                                    <ListGroup.Item><strong>Topic:</strong> {pq.question.debateSection.showAs} </ListGroup.Item>
+                                                    <ListGroup.Item><strong>Asked by:</strong> {pq.question.by.showAs}</ListGroup.Item>
+                                                </ListGroup>
+                                            </Col>
+                                            
+                                        </>
+
+                                    
+                                    ) : (
+                                    <p>Can't parse XML data</p>
+                                )}
+                            </Row> 
+                        </div>
+                    ) : (
+                        <p>PQ data not found</p>
+                    )
+                    }
+                </Row>
             </Container>
         </>  
     );
