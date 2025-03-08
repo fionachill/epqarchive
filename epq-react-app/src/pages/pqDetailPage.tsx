@@ -53,6 +53,18 @@ const PQDetailPage: React.FC = () => {
             }
         }
     }, [pq]);
+ 
+    /*  pseudo code for mapping all of the p elements in the speech array to one. 
+        combineSpeech(() => {
+        const fullText = speech.map((speech => {
+            for each of the <p> elements, add them to the fullText array.
+            Add a <br> tag after each one too. 
+            }}))
+        }
+    
+ 
+ 
+    */   
 
     return (
         <>
