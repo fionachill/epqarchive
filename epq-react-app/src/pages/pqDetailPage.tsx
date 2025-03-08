@@ -61,12 +61,13 @@ const PQDetailPage: React.FC = () => {
                 <Row>
                     { pq ? (
                         <div>
-                            <p>{pq.question.showAs.substring(3)}</p>
+     
                             <Row>
                                 { details ? (
                                         <>
                                             <Col>
                                                 <div>
+                                                    <p><em>{pq.question.showAs.substring(3)}</em></p>
                                                     { 
                                                         details?.speech?.map((speech, eId) => (
                                                             <div key={eId}>
@@ -86,12 +87,11 @@ const PQDetailPage: React.FC = () => {
                                                     <ListGroup.Item><strong>Department:</strong> {pq.question.to.showAs}</ListGroup.Item>
                                                     <ListGroup.Item><strong>Topic:</strong> {pq.question.debateSection.showAs} </ListGroup.Item>
                                                     <ListGroup.Item><strong>Asked by:</strong> {pq.question.by.showAs}</ListGroup.Item>
+                                                    <ListGroup.Item><strong>PQ Reference:</strong> {pq.question.showAs.slice(-11)}</ListGroup.Item>
                                                 </ListGroup>
                                             </Col>
                                             
                                         </>
-
-                                    
                                     ) : (
                                     <p>Can't parse XML data</p>
                                 )}

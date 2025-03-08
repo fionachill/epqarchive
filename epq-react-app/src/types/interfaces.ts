@@ -38,14 +38,26 @@ export interface BasePQProps {
 }
 
 export interface DetailsProps {
-    uri: string;
-    TLCPerson:{
+    uri?: string;
+    speakers?:{
         eId: string;
+        href: string;
         showAs: string;
     }[],
-    TLCRole:{
+    roles?:{
         eId: string;
+        href: string;
         showAs: string;
+    }[],
+    question?: {
+        by: string;
+        to: string;
+        eId: string;
+        p: {
+            _: string;
+            eId: string;
+            b:string[], 
+        }
     }[],
     speech: {
         by: string;
