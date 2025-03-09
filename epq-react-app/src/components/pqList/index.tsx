@@ -20,7 +20,7 @@ const PQList: React.FC<BasePQListProps> = ({pqs}) => {
 
     return (
         <>
-            <Container>
+            <Container fluid>
                 <Table className="table-hover" responsive="lg">
                     <thead>
                         <tr>

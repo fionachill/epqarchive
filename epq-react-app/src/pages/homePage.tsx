@@ -3,6 +3,7 @@ import Header from "../components/header";
 import { BasePQProps } from '../types/interfaces';
 import PQList from "../components/pqList";
 import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
 
 
 const HomePage: React.FC = () => {
@@ -39,8 +40,11 @@ const HomePage: React.FC = () => {
     return (
         <>
             <Header />
-            <Container>
-                <PQList pqs={pqs}></PQList>
+            <Container fluid>
+                <Row>Search goes here</Row>
+                <Row>
+                    <PQList pqs={pqs}></PQList> 
+                </Row>
             </Container>
         </>
     );

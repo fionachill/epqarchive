@@ -6,11 +6,6 @@
 //     pqref: string;
 // }
 
-export interface BasePQListProps {
-    pqs: BasePQProps[];
-}
-
-
 export interface BasePQProps {
     id: string;                    // This has been added for the encoded URI
     question: {
@@ -37,6 +32,23 @@ export interface BasePQProps {
     }
 }
 
+export interface BasePQListProps {
+    pqs: BasePQProps[];
+}
+
+
+export interface BaseSpeechProps {
+    speech: {
+        speaker: string;
+        fullText: string;
+        eId: string;
+    }
+}
+
+export interface SpeechListProps {
+    speeches: BaseSpeechProps[];
+}
+
 export interface DetailsProps {
     uri?: string;
     speakers?:{
@@ -49,27 +61,14 @@ export interface DetailsProps {
         href: string;
         showAs: string;
     }[],
-    question?: {
-        by: string;
-        to: string;
-        eId: string;
-        p: {
-            _: string;
-            eId: string;
-            b:string[], 
-        }
+    questions?: {
+        asker: string;
+        recipient: string;
     }[],
-    speech: {
-        by: string;
-        as?: string;
+    speeches: {
+        speaker: string;
+        fullText: string;
         eId: string;
-        from: {
-            _: string;               // This is name of the person who spoke 
-        },
-        p: {
-            _: string;
-            eId: string;
-      }[],      
     }[];
 }
 

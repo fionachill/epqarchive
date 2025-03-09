@@ -1,70 +1,75 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import Header from "../components/header";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col"; 
 import ListGroup from "react-bootstrap/ListGroup";
 import { BasePQProps } from "../types/interfaces";
-import { DetailsProps } from "../types/interfaces";
+// import { DetailsProps } from "../types/interfaces";
+import { BaseSpeechProps } from "../types/interfaces";
+import SpeechList from "../components/speechList";
 import { Base64 } from "js-base64";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 
 const PQDetailPage: React.FC = () => {
     const { id } = useParams();
-    const [pq, setPQ] = React.useState<BasePQProps>();    
-    const [details, setDetails] = React.useState<DetailsProps>();
+    const [pq, setPQ] = useState<BasePQProps>();    
+    const [speeches, setSpeeches] = useState<BaseSpeechProps[]>([]);
+    //    const [details, setDetails] = React.useState<DetailsProps>();
 
+    
     const decodeId = (id: string) => {
         return Base64.decode(id);
     };
+
+    const fetchPQData = async (uri: string) => {
+        console.log("Fetching PQ data from Oireachtas API");
+        try {
+            const res = await axios.get(`https://api.oireachtas.ie/v1/questions?qtype=oral,written&question_id=${uri}`);
+            return res.data;
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const fetchSpeeches = async (uri: string) => {
+        console.log("Contacting backend to fetch xml data");
+        try {
+            const res = await axios.get(`http://localhost:3000/api/fetch-xml?url=${uri}`);
+            console.log(res);
+            return res.data;
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
 
     useEffect(() => {
         console.log("Fetching PQ");
         if (id) {
             const uri = decodeId(id);
-            fetch(
-                `https://api.oireachtas.ie/v1/questions?qtype=oral,written&question_id=${uri}`
-            )
-                .then((res) => res.json())
-                .then((json) => {
-                    // console.log(json);
-                    return json.results[0];
-                })
-                .then((pq) => {
-                    setPQ(pq);
-                });
+            fetchPQData(uri)
+            .then((pq) => {
+                setPQ(pq.results[0]);
+            })
         }
     }, [id]);
 
     useEffect(() => {
-        console.log("Contacting backend to fetch xml data");
-        if (pq) {
-            const uri = pq.question.debateSection.formats.xml.uri;
-            console.log(uri);
-            try {
-                const response = axios.get(`/api/fetch-xml?url=${uri}`);
-                console.log(response);
-                response.then((response) => {
-                    setDetails(response.data);
-                });  
-            } catch (error) {
-                console.log(error);
-            }
+    console.log("Contacting backend to fetch xml data");
+    if (pq) {
+        const uri = pq.question.debateSection.formats.xml.uri;
+        fetchSpeeches(uri||"")
+        .then((speeches) => {
+            setSpeeches(speeches);
+        })
+        .catch((error) => {
+            console.log(error);
+        });
         }
     }, [pq]);
- 
-    /*  pseudo code for mapping all of the p elements in the speech array to one. 
-        combineSpeech(() => {
-        const fullText = speech.map((speech => {
-            for each of the <p> elements, add them to the fullText array.
-            Add a <br> tag after each one too. 
-            }}))
-        }
-    
- 
- 
-    */   
+   
 
     return (
         <>
@@ -72,43 +77,29 @@ const PQDetailPage: React.FC = () => {
             <Container fluid>
                 <Row>
                     { pq ? (
-                        <div>
-     
+                        <>
                             <Row>
-                                { details ? (
-                                        <>
-                                            <Col>
-                                                <div>
-                                                    <p><em>{pq.question.showAs.substring(3)}</em></p>
-                                                    { 
-                                                        details?.speech?.map((speech, eId) => (
-                                                            <div key={eId}>
-                                                                <h2>{speech.from._}</h2>
-                                                                { 
-                                                                    speech?.p?.map((p, eId) => <p key={eId}>{p._}</p>)
-            
-                                                                }  
-                                                            </div>
-                                                        ))   
-                                                    }  
-                                                </div>
-                                            </Col>
-                                            <Col xs={3}>
-                                                <ListGroup>
-                                                    <ListGroup.Item><strong>Date:</strong> {pq.question.date}</ListGroup.Item>
-                                                    <ListGroup.Item><strong>Department:</strong> {pq.question.to.showAs}</ListGroup.Item>
-                                                    <ListGroup.Item><strong>Topic:</strong> {pq.question.debateSection.showAs} </ListGroup.Item>
-                                                    <ListGroup.Item><strong>Asked by:</strong> {pq.question.by.showAs}</ListGroup.Item>
-                                                    <ListGroup.Item><strong>PQ Reference:</strong> {pq.question.showAs.slice(-11)}</ListGroup.Item>
-                                                </ListGroup>
-                                            </Col>
-                                            
-                                        </>
-                                    ) : (
-                                    <p>Can't parse XML data</p>
-                                )}
+                                <Col>
+                                    <p><em>{pq.question.showAs.substring(3)}</em></p>
+                                         { 
+                                            speeches ? (
+                                                <SpeechList speeches={speeches}/>
+                                            ) : ( 
+                                                <p>Speech data not found</p>
+                                            )
+                                        } 
+                                </Col>
+                                <Col xs={3}>
+                                    <ListGroup>
+                                        <ListGroup.Item><strong>Date:</strong> {pq.question.date}</ListGroup.Item>
+                                        <ListGroup.Item><strong>Department:</strong> {pq.question.to.showAs}</ListGroup.Item>
+                                        <ListGroup.Item><strong>Topic:</strong> {pq.question.debateSection.showAs} </ListGroup.Item>
+                                        <ListGroup.Item><strong>Asked by:</strong> {pq.question.by.showAs}</ListGroup.Item>
+                                        <ListGroup.Item><strong>PQ Reference:</strong> {pq.question.showAs.slice(-11)}</ListGroup.Item>
+                                    </ListGroup>
+                                </Col>       
                             </Row> 
-                        </div>
+                        </>
                     ) : (
                         <p>PQ data not found</p>
                     )
