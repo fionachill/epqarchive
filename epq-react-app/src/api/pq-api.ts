@@ -13,6 +13,18 @@ export const fetchPQs = async () => {
         .then((res) => res.data.results);
 };
 
+// This function is called in the HomePage component to retrieve the PQs as well as data for pagination
+export const fetchPQsPage = async (page: number) => {
+    const limit = 10;
+    let skip = 0;
+    if(page < 1)  {
+        skip = (page*limit);  
+    };
+    const response = await axios.get(`https://api.oireachtas.ie/v1/questions?skip=${skip}&limit=${limit}&qtype=oral,written`);
+    return response;
+};
+
+
 // These functions are used in the PQDetailPage component together to retrieve data 
 
 export const fetchPQData = async (uri: string) => {

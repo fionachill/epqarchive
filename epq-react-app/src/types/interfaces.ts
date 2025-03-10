@@ -36,13 +36,26 @@ export interface BasePQListProps {
     pqs: BasePQProps[];
 }
 
+export interface HomePageProps {
+    page: number;
+    head: {
+        counts: {
+            questionCount: number;
+            resultCount: number;
+        },
+        dateRange: {
+            start: string,
+            end: string
+        }
+    },
+    pqs: BasePQProps[];
+}
+
 
 export interface BaseSpeechProps {
-    speech: {
-        speaker: string;
-        fullText: string;
-        eId: string;
-    }
+    speaker: string;
+    fullText: string;
+    eId: string;
 }
 
 export interface SpeechListProps {

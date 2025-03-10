@@ -24,11 +24,11 @@ const PQList: React.FC<BasePQListProps> = ({pqs}) => {
                 <Table className="table-hover" responsive="lg">
                     <thead>
                         <tr>
-                            <th className="col-sm-2">Department</th>
-                            <th className="col-sm-2">Topic</th>
-                            <th className="col-sm-4">Question</th>
+                            <th className="col-sm-1">Department</th>
+                            <th className="col-sm-1">Topic</th>
+                            <th className="col-sm-5">Question</th>
                             <th className="col-sm-1">Type</th>
-                            <th className="col-sm-2">Date</th>
+                            <th className="col-sm-1">Date</th>
                             <th className="col-sm-1"></th> 
                         </tr>
                     </thead>
