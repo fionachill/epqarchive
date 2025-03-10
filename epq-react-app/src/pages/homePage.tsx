@@ -4,25 +4,22 @@ import { BasePQProps } from '../types/interfaces';
 import PQList from "../components/pqList";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
-
+import { fetchPQs } from "../api/pq-api";
 
 const HomePage: React.FC = () => {
     const [pqs, setPQs] = useState<BasePQProps[]>([]);
 
 
     useEffect(() => {
-        console.log("Fetching PQs");
-        fetch(
-            `https://api.oireachtas.ie/v1/questions?limit=10&qtype=oral,written`
-        )
-            .then((res) => res.json())
-            .then((json) => {
-                console.log(json);
-                return json.results;
-            })
+        console.log("Fetching PQs from Oireachtas API");
+        try {
+            fetchPQs()
             .then((pqs) => {
                 setPQs(pqs);
-            });
+            })
+        } catch {
+            console.log("Error fetching PQs");
+        }
     }, []);
 
 

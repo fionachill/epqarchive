@@ -5,53 +5,32 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col"; 
 import ListGroup from "react-bootstrap/ListGroup";
 import { BasePQProps } from "../types/interfaces";
-// import { DetailsProps } from "../types/interfaces";
 import { BaseSpeechProps } from "../types/interfaces";
 import SpeechList from "../components/speechList";
+import { fetchPQData, fetchXML } from "../api/pq-api";
 import { Base64 } from "js-base64";
 import { useParams } from "react-router-dom";
-import axios from "axios";
+
 
 const PQDetailPage: React.FC = () => {
     const { id } = useParams();
     const [pq, setPQ] = useState<BasePQProps>();    
     const [speeches, setSpeeches] = useState<BaseSpeechProps[]>([]);
+
+    // This is the groundwork for returning more information from the XML, such as the speakers and their roles. 
     //    const [details, setDetails] = React.useState<DetailsProps>();
 
-    
     const decodeId = (id: string) => {
         return Base64.decode(id);
     };
-
-    const fetchPQData = async (uri: string) => {
-        console.log("Fetching PQ data from Oireachtas API");
-        try {
-            const res = await axios.get(`https://api.oireachtas.ie/v1/questions?qtype=oral,written&question_id=${uri}`);
-            return res.data;
-        } catch (error) {
-            console.log(error);
-        }
-    };
-
-    const fetchSpeeches = async (uri: string) => {
-        console.log("Contacting backend to fetch xml data");
-        try {
-            const res = await axios.get(`http://localhost:3000/api/fetch-xml?url=${uri}`);
-            console.log(res);
-            return res.data;
-        } catch (error) {
-            console.log(error);
-        }
-    };
-
-
+   
     useEffect(() => {
         console.log("Fetching PQ");
         if (id) {
             const uri = decodeId(id);
             fetchPQData(uri)
             .then((pq) => {
-                setPQ(pq.results[0]);
+                setPQ(pq);
             })
         }
     }, [id]);
@@ -60,8 +39,9 @@ const PQDetailPage: React.FC = () => {
     console.log("Contacting backend to fetch xml data");
     if (pq) {
         const uri = pq.question.debateSection.formats.xml.uri;
-        fetchSpeeches(uri||"")
+        fetchXML(uri)
         .then((speeches) => {
+            console.log(speeches);
             setSpeeches(speeches);
         })
         .catch((error) => {
@@ -69,7 +49,6 @@ const PQDetailPage: React.FC = () => {
         });
         }
     }, [pq]);
-   
 
     return (
         <>
