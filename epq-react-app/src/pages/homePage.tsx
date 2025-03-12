@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 import Pagination from "react-bootstrap/Pagination";
-
+import Dropdown from "react-bootstrap/Dropdown";
+import DropdownButton from "react-bootstrap/DropdownButton";
 import Header from "../components/header";
 import { BasePQProps } from '../types/interfaces';
-import { HomePageProps } from "../types/interfaces";
+// import { HomePageProps } from "../types/interfaces";
 import PQList from "../components/pqList";
 
-// import { fetchPQs, fetchPQsPage } from "../api/pq-api";
-// import { fetchPQsPage } from "../api/pq-api";
-import axios from 'axios';
+import { fetchPQsPage } from "../api/pq-api";
 
 const HomePage: React.FC = () => {
     const [pqs, setPQs] = useState<BasePQProps[]>([]);
@@ -21,22 +21,13 @@ const HomePage: React.FC = () => {
     const [resultCount, setResultCount] = useState<number>(0);
     const [limit, setLimit] = useState<number>(10);
 
-    // useEffect(() => {
-    //     console.log("Fetching PQs from Oireachtas API");
-    //     try {
-    //         fetchPQs()
-    //         .then((pqs) => {
-    //             setPQs(pqs);
-    //         })
-    //     } catch {
-    //         console.log("Error fetching PQs");
-    //     }
-    // }, []);
-
-
-
-
     // Pagination Logic
+
+    const handleFirstPage = () => {
+        if (page !== 1) {
+            setPage(1);
+        }
+    };
 
     const handlePrevPage = () => {
         if (page > 1) {
@@ -50,49 +41,58 @@ const HomePage: React.FC = () => {
         }
     };
 
-    // const fetchPQsPage = async (page: number) => {
-    //     let skip = 0;
-    //     if(page < 1)  {
-    //         skip = (page*limit);  
-    //     };
-    //     return axios.get(`https://api.oireachtas.ie/v1/questions?skip=${skip}&limit=${limit}&qtype=oral,written`)
-    //     .then((res) => res.data);
-    // };
+    const handleLastPage = () => {
+        if (page !== totalPages) {
+            setPage(totalPages);
+        }
+    };
 
+    const handleLimitChange = (number : number) => {
+        setLimit(number);
+    };
 
     useEffect(() => {
+        const limit = 10;
         let skip = 0;
-        if(page < 1)  {
-            skip = (page*limit);  
+        if(page > 1)  {
+            skip = (page - 1)  * limit;  
         };
         console.log(`Fetching PQ page ${page}`);
-        axios
-        .get<HomePageProps>(`https://api.oireachtas.ie/v1/questions?skip=${skip}&limit=${limit}&qtype=oral,written`)
-        .then(res => {
-            const pqs = res.data.results;
-            const resultCount = res.data.head.counts.resultCount;
-            setPQs(pqs);
-            setResultCount(resultCount);
-            setTotalPages(Math.ceil(resultCount/10))
-            });
-    }, [page, pqs, resultCount, totalPages, limit]);
+        try {
+            fetchPQsPage(skip, limit)
+            .then((response) => {
+                setPQs(response.data.results);
+                setResultCount(response.data.head.counts.resultCount);
+                setTotalPages(Math.ceil(resultCount/limit));
+            })
+        } catch {
+            console.log("Error fetching PQs");
+        }
+    }, [page, pqs, resultCount, totalPages]);
 
     
     return (
         <>
             <Header />
             <Container fluid>
-                <Row>Search goes here</Row>
-                {/* <Row>Current Page: {page}</Row>
-                <Row>Total PQs: {resultCount}</Row> */}
+                <Row>
+                    <Col>
+                        Displaying 1 - 10 of {resultCount} PQs
+                    </Col>
+                    <Col>
+                        Search goes here
+                    </Col>
+                </Row>
                 <Row>
                     <PQList pqs={pqs}></PQList> 
                 </Row>
                 <Row>Total Pages: {totalPages}</Row>
                 <Pagination>
+                    <Pagination.First onClick={handleFirstPage} disabled={page === 1}/>
                     <Pagination.Prev onClick={handlePrevPage} disabled={page === 1}/>
                     <Pagination.Item>{page}</Pagination.Item>
                     <Pagination.Next onClick={handleNextPage} disabled={page === totalPages}/>
+                    <Pagination.Last onClick={handleLastPage} disabled={page === totalPages}/>
                 </Pagination>
             </Container>
         </>
