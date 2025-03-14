@@ -3,13 +3,13 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Pagination from "react-bootstrap/Pagination";
-import Dropdown from "react-bootstrap/Dropdown";
-import DropdownButton from "react-bootstrap/DropdownButton";
+// import Dropdown from "react-bootstrap/Dropdown";
+// import DropdownButton from "react-bootstrap/DropdownButton";
 import Header from "../components/header";
 import { BasePQProps } from '../types/interfaces';
 // import { HomePageProps } from "../types/interfaces";
 import PQList from "../components/pqList";
-
+import SearchFilter from "../components/searchFilter";
 import { fetchPQsPage } from "../api/pq-api";
 
 const HomePage: React.FC = () => {
@@ -19,7 +19,7 @@ const HomePage: React.FC = () => {
     const [page, setPage] = useState<number>(1);
     const [totalPages, setTotalPages] = useState<number>(0);
     const [resultCount, setResultCount] = useState<number>(0);
-    const [limit, setLimit] = useState<number>(10);
+    // const [limit, setLimit] = useState<number>(10);
 
     // Pagination Logic
 
@@ -47,9 +47,6 @@ const HomePage: React.FC = () => {
         }
     };
 
-    const handleLimitChange = (number : number) => {
-        setLimit(number);
-    };
 
     useEffect(() => {
         const limit = 10;
@@ -75,18 +72,17 @@ const HomePage: React.FC = () => {
         <>
             <Header />
             <Container fluid>
+
                 <Row>
-                    <Col>
-                        Displaying 1 - 10 of {resultCount} PQs
+                    <Col sm={3}>
+                        <SearchFilter />
                     </Col>
-                    <Col>
-                        Search goes here
+                    <Col sm={8}>
+                        <PQList pqs={pqs}></PQList> 
                     </Col>
+                    
                 </Row>
-                <Row>
-                    <PQList pqs={pqs}></PQList> 
-                </Row>
-                <Row>Total Pages: {totalPages}</Row>
+                
                 <Pagination>
                     <Pagination.First onClick={handleFirstPage} disabled={page === 1}/>
                     <Pagination.Prev onClick={handlePrevPage} disabled={page === 1}/>
@@ -94,6 +90,7 @@ const HomePage: React.FC = () => {
                     <Pagination.Next onClick={handleNextPage} disabled={page === totalPages}/>
                     <Pagination.Last onClick={handleLastPage} disabled={page === totalPages}/>
                 </Pagination>
+                <Row><em>Page {page} of {totalPages}</em></Row>
             </Container>
         </>
     );

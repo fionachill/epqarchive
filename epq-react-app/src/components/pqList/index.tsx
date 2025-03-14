@@ -38,7 +38,7 @@ const PQList: React.FC<BasePQListProps> = ({pqs}) => {
                                 <tr key={index}>
                                     <td>{pq.question.to.showAs}</td>
                                     <td>{pq.question.debateSection.showAs}</td>
-                                    <td>{pq.question.showAs}</td>
+                                    <td>{pq.question.showAs.substring(3)}</td>
                                     <td>{pq.question.questionType}</td>
                                     <td>{pq.question.date}</td>
                                     <td>
