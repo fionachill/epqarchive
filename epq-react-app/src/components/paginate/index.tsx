@@ -1,16 +1,17 @@
-import React, {useState, ChangeEvent, MouseEvent } from 'react';
+import React from 'react';
 import Pagination from "react-bootstrap/Pagination";
-import { HomePageProps } from '../../types/interfaces.ts';
+import Row from 'react-bootstrap/Row';
+import { paginateProps } from '../../types/interfaces';
 
-interface PaginateProps {
-    currentPage: number,
-    resultCount: number,
-    limit: number,
-    onPageChange: (pageNum: number) => void,
-};
+// interface PaginateProps {
+//     currentPage: number,
+//     resultCount: number,
+//     limit: number,
+//     onPageChange: (pageNum: number) => void,
+// };
 
 
-const Paginate: React.FC<PaginateProps> = props => {
+const Paginate: React.FC<paginateProps> = props => {
 
     const totalPages = Math.ceil(Number(props.resultCount)/props.limit);
 
@@ -44,20 +45,17 @@ const Paginate: React.FC<PaginateProps> = props => {
 return (
     <>
     { totalPages  && totalPages > 2 ? (
-        <Pagination>
-        <Pagination.First onClick={handleFirstPage} disabled={props.currentPage === 1}/>
-        <Pagination.Prev onClick={handlePrevPage} disabled={props.currentPage === 1}/>
-        <Pagination.Item>{props.currentPage}</Pagination.Item>
-        <Pagination.Next onClick={handleNextPage} disabled={props.currentPage === totalPages}/>
-        <Pagination.Last onClick={handleLastPage} disabled={props.currentPage === totalPages}/>
-    </Pagination>
-    )
-
-    : null
+        <Pagination className="justify-content-center">
+            <Pagination.First onClick={handleFirstPage} disabled={props.currentPage === 1}/>
+            <Pagination.Prev onClick={handlePrevPage} disabled={props.currentPage === 1}/>
+            <Pagination.Item>{props.currentPage}</Pagination.Item>
+            <Pagination.Next onClick={handleNextPage} disabled={props.currentPage === totalPages}/>
+            <Pagination.Last onClick={handleLastPage} disabled={props.currentPage === totalPages}/>
+        </Pagination>
+    ) : null
     }
+        <Row><em>Page {props.currentPage} of {totalPages}</em></Row>
     </>
-    
-    
     );
 }
 

@@ -53,7 +53,6 @@ export interface HomePageProps {
 
 export interface paginateProps {
     currentPage: number,
-    totalPages: number,
     resultCount: number,
     limit: number,
     onPageChange: (pageNum: number) => void,

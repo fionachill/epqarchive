@@ -16,12 +16,13 @@ const HomePage: React.FC = () => {
 
     // These are used for pagination
     const [currentPage, setCurrentPage] = useState<number>(1);
-    const [totalPages, setTotalPages] = useState<number>(0);
+    // const [totalPages, setTotalPages] = useState<number>(0);
     const [resultCount, setResultCount] = useState<number>(0);
 
-    const limit = 10;
     // In a future version users can set the limit of PQs shown 
     // const [limit, setLimit] = useState<number>(10);
+    const limit = 10;
+
 
     
     // Pagination Logic
@@ -40,12 +41,12 @@ const HomePage: React.FC = () => {
             .then((response) => {
                 setPQs(response.data.results);
                 setResultCount(response.data.head.counts.resultCount);
-                setTotalPages(Math.ceil(resultCount/limit));
+                // setTotalPages(Math.ceil(resultCount/limit));
             })
         } catch {
             console.log("Error fetching PQs");
         }
-    }, [currentPage, pqs, resultCount, totalPages]);
+    }, [currentPage, pqs, resultCount]);
 
     
     return (
@@ -68,7 +69,6 @@ const HomePage: React.FC = () => {
                     onPageChange={changePage}
                     >
                 </Paginate>
-                <Row><em>Page {currentPage} of {totalPages}</em></Row>
             </Container>
         </>
     );
