@@ -37,7 +37,7 @@ export interface BasePQListProps {
 }
 
 export interface HomePageProps {
-    page: number;
+    page?: number;
     head: {
         counts: {
             questionCount: number;
@@ -48,9 +48,16 @@ export interface HomePageProps {
             end: string
         }
     },
-    pqs: BasePQProps[];
+    results: BasePQProps[];
 }
 
+export interface paginateProps {
+    currentPage: number,
+    totalPages: number,
+    resultCount: number,
+    limit: number,
+    onPageChange: (pageNum: number) => void,
+}
 
 export interface BaseSpeechProps {
     speaker: string;

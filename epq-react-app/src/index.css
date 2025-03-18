@@ -54,6 +54,12 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+.mainnavbar {
+  /* border: red solid 5px; */
+  color: #a39161;
+  background-color: #565148;
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;

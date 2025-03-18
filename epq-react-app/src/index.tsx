@@ -4,7 +4,7 @@ import { BrowserRouter, Route, Routes} from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import HomePage from './pages/homePage';
 import PQDetailPage from './pages/pqDetailPage';   
-
+import "./index.css";
 
 const App = () => {
     return (
