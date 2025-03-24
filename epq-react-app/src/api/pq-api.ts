@@ -10,12 +10,26 @@ export const fetchSamplePQs = async () => {
 export const fetchPQs = async () => {
     return axios.get(
         `https://api.oireachtas.ie/v1/questions?limit=10&qtype=oral,written`)
-        .then((res) => res.data.results);
+        .then((res) => {
+        if (res.status !== 200) 
+            throw new Error(`Unable to fetch PQs. Response status: ${res.status}`)    
+        return res.data.results;
+    })
+    .catch((error) => {
+        throw error
+    });
 };
 
 // This function is called in the HomePage component to retrieve the PQs as well as data for pagination
 export const fetchPQsPage = async (skip: number, limit: number) => {
     const response = await axios.get(`https://api.oireachtas.ie/v1/questions?skip=${skip}&limit=${limit}&qtype=oral,written`);
+    return response;
+};
+
+
+// Function to retrieve paginated data with Date filter turned on
+export const fetchFilteredPQs = async (skip: number, limit: number, year: number) => {
+    const response = await axios.get(`https://api.oireachtas.ie/v1/questions?date_start=${year}-01-01&date_end=${year}-12-01skip=${skip}&limit=${limit}&qtype=oral,written`);
     return response;
 };
 
@@ -30,4 +44,9 @@ export const fetchPQData = async (uri: string) => {
 export const fetchXML = async (uri: string) => {
     return await axios.get(`http://localhost:3000/api/fetch-xml?url=${uri}`)
     .then((res) => res.data);
+};
+
+export const fetchMembers = async (memberSearch: string) => {
+    const response = await axios.get(`https://api.oireachtas.ie/v1/members?fuzzy_name_search=${memberSearch}`);
+    return response;
 };

@@ -95,3 +95,16 @@ export interface PQDetailsProps {
     pq: BasePQProps;
     details: DetailsProps;
 }
+
+export interface MembersProps {
+    member: {
+        fullName: string;
+        uri: string;
+    }
+}
+
+export interface MemberListProps {
+    members: MembersProps[];
+}
+
+export type FilterOption = "year" | "member";

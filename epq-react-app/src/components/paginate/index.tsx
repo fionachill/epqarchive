@@ -3,18 +3,10 @@ import Pagination from "react-bootstrap/Pagination";
 import Row from 'react-bootstrap/Row';
 import { paginateProps } from '../../types/interfaces';
 
-// interface PaginateProps {
-//     currentPage: number,
-//     resultCount: number,
-//     limit: number,
-//     onPageChange: (pageNum: number) => void,
-// };
-
 
 const Paginate: React.FC<paginateProps> = props => {
 
     const totalPages = Math.ceil(Number(props.resultCount)/props.limit);
-
 
     const handleFirstPage = () => {
         if (props.currentPage !== 1) {
