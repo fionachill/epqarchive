@@ -3,12 +3,11 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Header from "../components/header";
-import { FilterOption } from '../types/interfaces';
 import { BasePQProps } from "../types/interfaces";
 import PQList from "../components/pqList";
 import FilterBar from "../components/filterBar";
 import Paginate from "../components/paginate";
-import { fetchPQsPage } from "../api/pq-api";
+import { fetchPQsWithParams } from "../api/pq-api";
 
 
 const calculateSkip = (currentPage: number, limit: number) => {
@@ -23,13 +22,14 @@ const calculateSkip = (currentPage: number, limit: number) => {
 const HomePage: React.FC = () => {
     const [pqs, setPQs] = useState<BasePQProps[]>([]);
 
-    const [yearFilter, setYearFilter] = useState(2025);
-    const [memberFilter, setMemberFilter] = useState("");
+    const [startYear, setStartYear] = useState("1900");
+    const [endYear, setEndYear] = useState("2099");
+    const [memberParam, setMemberParam] = useState("");
 
-    // These are used for pagination
+    // Pagination Logic
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [resultCount, setResultCount] = useState<number>(0);
-    // Pagination Logic
+
 
     const limit = 10;
 
@@ -37,38 +37,32 @@ const HomePage: React.FC = () => {
         setCurrentPage(pageNum);
 
     // Function passed to filter bar
-    const handleChange = (type: FilterOption, value: string) => {
-        if (type === "year") setYearFilter(Number(value));
-        else setMemberFilter(value);
+    const handleChange = (options) => {
+        const year = options.year;
+        const member = options.member;
+        console.log("Applying Filters");
+        if(member !== "" && year !== "") {
+            setMemberParam(member);
+            setStartYear(year);
+            setEndYear(year);
+        }  else if(member !== "") {
+            setMemberParam(member);
+        } else if(year !== "") {
+            setStartYear(year);
+            setEndYear(year);
+        }
     };
 
-
-    // const applyFilter = (year: number) => {
-    //     console.log(`Fetching PQs from ${year}`);
-    //     let skip = 0;
-    //     if(currentPage > 1)  {
-    //         skip = (currentPage - 1)  * limit;  
-    //     };
-    //     try {
-    //         fetchFilteredPQs(skip, limit, year)
-    //         .then((response) => {
-    //             setPQs(response.data.results);
-    //             setResultCount(response.data.head.counts.resultCount);
-    //         })
-    //     } catch {
-    //         console.log("Error fetching PQs");
-    //     }
-    // }, [currentPage, pqs, resultCount, year]);
 
     useEffect(() => {
         const skip = calculateSkip(currentPage, limit);
         console.log(`Fetching PQ page ${currentPage}`);
-        fetchPQsPage(skip, limit)
+        fetchPQsWithParams(skip, limit, startYear, endYear, memberParam)
         .then((response) => {
             setPQs(response.data.results);
             setResultCount(response.data.head.counts.resultCount);
         });
-    }, [currentPage]);
+    }, [currentPage, startYear, endYear, memberParam]);
 
     // useEffect(() => {
     //     calculateSkip(currentPage, limit);
@@ -91,9 +85,7 @@ const HomePage: React.FC = () => {
             <Container fluid>
                 <Row>
                     <FilterBar
-                        onUserInput={handleChange}
-                        yearFilter={yearFilter}
-                        memberFilter={memberFilter}
+                        onApplyFilters={handleChange}
                      />
                 </Row>
                 <Row>

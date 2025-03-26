@@ -4,31 +4,13 @@ import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
 import { Typeahead, withAsync} from 'react-bootstrap-typeahead';
-import { MemberListProps } from '../../types/interfaces';
 import { fetchMembers} from '../../api/pq-api';
-
 const AsyncTypeahead = withAsync(Typeahead);
 
 interface FilterBarProps {
-    onUserInput: (f: FilterOption, s: string) => void;
-    yearFilter: number;
-    memberFilter: string;
-}
-
-interface apiMemberProps {
-    _source: {
-        member: {
-            fullName: string;
-            uri: string;
-        }
-    }
-}
-
-interface apiMemberOptions {
-    member: {
-        fullName: string;
-        uri: string;
-    }
+    onApplyFilters: (options: {year?: string; member?: string}) => void;
+    year?: string;
+    member?: string;
 }
 
 interface memberList {
@@ -39,24 +21,22 @@ interface memberList {
 const currentYear = new Date().getFullYear();
 
 
-const FilterBar: React.FC<FilterBarProps> = ({ yearFilter, memberFilter, onUserInput }) => {
-    const [year, setYear] = useState<string>(yearFilter);
-    
+const FilterBar: React.FC<FilterBarProps> = ({ onApplyFilters }) => {
+    const [yearOption, setYearOption] = useState("");
+    const [memberOption, setMemberOption] = useState("");    
+
+
+    // These options are for populating the async typeahead 
     const [apiMembers, setApiMembers] = useState<memberList[]>([]);
-    const [member, setMember] = useState<string>(memberFilter);
+    const [selectedAPIMember, setSelectedAPIMember] = useState<memberList[]>([]);
+    const [memberURI, setMemberURI] = useState("");
     const [isLoading, setIsLoading] = useState(false);
-    const [memberResults, setMemberResults] = useState<memberList[]>([]);
 
     const yearList = [];
     for (let i = currentYear; i >=  1990; i--) {
         yearList.push(i);
     };
 
-    // const testMembers = [
-    //     {fullName: "Henry J. J. Abbott", uri: "https://data.oireachtas.ie/ie/oireachtas/member/id/Henry-J-J-Abbott.D.1987-03-10"},
-    //     {fullName: "Caroline Acheson", uri: "https://data.oireachtas.ie/ie/oireachtas/member/id/Caroline-Acheson.D.1981-06-30"},
-    //     {fullName: "Gerry Adams", uri: "https://data.oireachtas.ie/ie/oireachtas/member/id/Gerry-Adams.D.2011-03-09"}
-    // ];
 
     const handleSearch = (query: string) => {
         setIsLoading(true);
@@ -64,6 +44,7 @@ const FilterBar: React.FC<FilterBarProps> = ({ yearFilter, memberFilter, onUserI
         fetchMembers(query)
         .then((response) => {
             const results = response.data.results;
+            const memberResults: memberList[] = [];
             results.forEach(results => {
                 const fullName = results._source.member.fullName;
                 const uri = results._source.member.uri;
@@ -74,17 +55,28 @@ const FilterBar: React.FC<FilterBarProps> = ({ yearFilter, memberFilter, onUserI
         });
     };
 
-    // const filterBy = () => true;
 
-
-    const handleChange = (e: ChangeEvent<HTMLSelectElement>, type: FilterOption, value: string) => {
-        // preventDefault()
-        onUserInput(type, value);
+    const handleSubmit = () => {
+        if(yearOption !== "" || memberOption !== "") {
+            console.log(`Year: ${yearOption} Member: ${memberOption} being passed to parent`)
+            onApplyFilters({year: yearOption, member: memberOption});
+        } 
     };
 
     const handleYearChange = (e: ChangeEvent<HTMLSelectElement>) => {
-        setYear(e.target.value);
-        handleChange(e, "year", e.target.value);
+        setYearOption((e.target.value));
+        console.log(yearOption);
+    };
+
+    const handleMemberChange = async(selected) => {
+        if (selected.length == 1) {
+            const uri = selected[0].uri;
+            console.log(uri);
+            setMemberOption(uri);
+        } else if(selected.length === 0) {
+            setSelectedAPIMember([]);
+            setMemberOption("");
+        } 
     };
 
 
@@ -101,18 +93,7 @@ const FilterBar: React.FC<FilterBarProps> = ({ yearFilter, memberFilter, onUserI
                     />{''} 
                     Filter Options
                 </Col>
-                <Col xs="auto">
-                    <Form.Select 
-                        onChange={handleYearChange} 
-                        aria-label="Year" 
-                        value={yearFilter}
-                    >
-                    <option>Year</option>
-                    { yearList.map((year, index) => (
-                        <option key={index} value={year}>{year}</option>
-                        ))}
-                    </Form.Select>
-                </Col>
+
                 <Col xs="auto">
                 <AsyncTypeahead
                     ignoreDiacritics={false}
@@ -122,11 +103,24 @@ const FilterBar: React.FC<FilterBarProps> = ({ yearFilter, memberFilter, onUserI
                     minLength={3}
                     onSearch={handleSearch}
                     options={apiMembers}
+                    onChange={(selected) => handleMemberChange(selected)}
                     placeholder="Search by Dáil member"
                 />
                 </Col>
                 <Col xs="auto">
-                    <Button type="submit" variant="outline-info" size="sm" >
+                    <Form.Select 
+                        onChange={handleYearChange} 
+                        aria-label="Year" 
+                        value={yearOption}
+                    >
+                    <option>Year</option>
+                    { yearList.map((year, index) => (
+                        <option key={index} value={year}>{year}</option>
+                        ))}
+                    </Form.Select>
+                </Col>
+                <Col xs="auto">
+                    <Button variant="outline-info" size="sm" onClick={handleSubmit}>
                         Apply filters
                     </Button>
                 </Col>

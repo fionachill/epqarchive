@@ -28,10 +28,29 @@ export const fetchPQsPage = async (skip: number, limit: number) => {
 
 
 // Function to retrieve paginated data with Date filter turned on
-export const fetchFilteredPQs = async (skip: number, limit: number, year: number) => {
-    const response = await axios.get(`https://api.oireachtas.ie/v1/questions?date_start=${year}-01-01&date_end=${year}-12-01skip=${skip}&limit=${limit}&qtype=oral,written`);
+export const fetchFilteredPQs = async (skip: number, limit: number, year: number, member: string) => {
+    const response = await axios.get(`https://api.oireachtas.ie/v1/questions?date_start=${year}-01-01&date_end=${year}-12-31skip=${skip}&limit=${limit}&qtype=oral,written&member_id=${member}`);
     return response;
 };
+
+// Function to retrieve paginated data with date/member params - different axios call
+export const fetchPQsWithParams = async (skip: number, limit: number, startYear: string, endYear: string, memberParam: string) => {
+    const params = {
+        date_start: `${startYear}-01-01`,
+        date_end: `${endYear}-12-31`,
+        limit: limit,
+        skip: skip,
+        qtype: `oral,written`,
+        member_id: memberParam
+    }
+    const response = await axios.get(`https://api.oireachtas.ie/v1/questions?`, {
+        params: {
+            ...params
+        }
+    });
+    return response;
+};
+
 
 
 // These functions are used in the PQDetailPage component together to retrieve data 
