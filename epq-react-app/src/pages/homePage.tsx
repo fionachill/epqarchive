@@ -64,19 +64,6 @@ const HomePage: React.FC = () => {
         });
     }, [currentPage, startYear, endYear, memberParam]);
 
-    // useEffect(() => {
-    //     calculateSkip(currentPage, limit);
-    //     console.log(`Fetching PQ page ${currentPage}`);
-    //     try {
-    //         fetchPQsPageDateFilter(skip, limit, year)
-    //         .then((response) => {
-    //             setPQs(response.data.results);
-    //             setResultCount(response.data.head.counts.resultCount);
-    //         })
-    //     } catch {
-    //         console.log("Error fetching PQs");
-    //     }
-    // }, [currentPage, pqs, resultCount, year]);
 
     
     return (

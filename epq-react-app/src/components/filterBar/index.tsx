@@ -3,9 +3,19 @@ import Form from 'react-bootstrap/Form';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import Tooltip from 'react-bootstrap/Tooltip';
 import { Typeahead, withAsync} from 'react-bootstrap-typeahead';
 import { fetchMembers} from '../../api/pq-api';
 const AsyncTypeahead = withAsync(Typeahead);
+
+
+const renderTooltip = (props) => (
+    <Tooltip id="typeahead-tooltip" {...props}>
+        Return PQs asked by Dáil members 
+    </Tooltip>
+);
+
 
 interface FilterBarProps {
     onApplyFilters: (options: {year?: string; member?: string}) => void;
@@ -28,8 +38,6 @@ const FilterBar: React.FC<FilterBarProps> = ({ onApplyFilters }) => {
 
     // These options are for populating the async typeahead 
     const [apiMembers, setApiMembers] = useState<memberList[]>([]);
-    const [selectedAPIMember, setSelectedAPIMember] = useState<memberList[]>([]);
-    const [memberURI, setMemberURI] = useState("");
     const [isLoading, setIsLoading] = useState(false);
 
     const yearList = [];
@@ -74,7 +82,6 @@ const FilterBar: React.FC<FilterBarProps> = ({ onApplyFilters }) => {
             console.log(uri);
             setMemberOption(uri);
         } else if(selected.length === 0) {
-            setSelectedAPIMember([]);
             setMemberOption("");
         } 
     };
@@ -95,17 +102,17 @@ const FilterBar: React.FC<FilterBarProps> = ({ onApplyFilters }) => {
                 </Col>
 
                 <Col xs="auto">
-                <AsyncTypeahead
-                    ignoreDiacritics={false}
-                    id="member-search"
-                    isLoading={isLoading}
-                    labelKey="fullName"
-                    minLength={3}
-                    onSearch={handleSearch}
-                    options={apiMembers}
-                    onChange={(selected) => handleMemberChange(selected)}
-                    placeholder="Search by Dáil member"
-                />
+                    <AsyncTypeahead
+                        ignoreDiacritics={false}
+                        id="member-search"
+                        isLoading={isLoading}
+                        labelKey="fullName"
+                        minLength={3}
+                        onSearch={handleSearch}
+                        options={apiMembers}
+                        onChange={(selected) => handleMemberChange(selected)}
+                        placeholder="Search by Dáil member"
+                    />
                 </Col>
                 <Col xs="auto">
                     <Form.Select 

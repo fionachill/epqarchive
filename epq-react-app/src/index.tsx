@@ -3,7 +3,8 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Route, Routes} from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import HomePage from './pages/homePage';
-import PQDetailPage from './pages/pqDetailPage';   
+import PQDetailPage from './pages/pqDetailPage';
+import AboutPage from './pages/aboutPage';   
 import "./index.css";
 
 
@@ -12,6 +13,7 @@ const App = () => {
         <BrowserRouter>
             <Routes>
                 <Route path ="/" element={<HomePage />} />
+                <Route path="/about" element={<AboutPage />} />
                 <Route path ="/pqs/:id" element={<PQDetailPage />} />
             </Routes>
         </BrowserRouter>

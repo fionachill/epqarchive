@@ -23,6 +23,9 @@ const Header: React.FC = () => {
                 <Nav className="justify-content-flex-start">
                     <Nav.Link href="/">Home</Nav.Link>
                 </Nav>
+                <Nav className="justify-content-flex-end">
+                    <Nav.Link href="/about">About</Nav.Link>
+                </Nav>
                 <Form className="d-flex">
                   <Form.Control
                     type="search"

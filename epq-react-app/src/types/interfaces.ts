@@ -106,5 +106,3 @@ export interface MembersProps {
 export interface MemberListProps {
     members: MembersProps[];
 }
-
-export type FilterOption = "year" | "member";
