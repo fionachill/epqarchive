@@ -6,6 +6,7 @@ import HomePage from './pages/homePage';
 import PQDetailPage from './pages/pqDetailPage';
 import AboutPage from './pages/aboutPage';   
 import "./index.css";
+import RegistrationPage from './pages/registrationPage';
 
 
 const App = () => {
@@ -14,6 +15,8 @@ const App = () => {
             <Routes>
                 <Route path ="/" element={<HomePage />} />
                 <Route path="/about" element={<AboutPage />} />
+                <Route path="/register" element={<RegistrationPage />} />
+                 
                 <Route path ="/pqs/:id" element={<PQDetailPage />} />
             </Routes>
         </BrowserRouter>

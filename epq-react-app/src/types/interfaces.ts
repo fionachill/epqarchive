@@ -32,6 +32,23 @@ export interface BasePQProps {
     }
 }
 
+//This may be used to transform the format of the returned PQs for legibility
+export interface BasePQPropsShort {
+    id: string;
+    question: {
+        date: string;
+        xml: string;
+        topic: string;
+        questionText: string;
+        td: string;
+        tdUri: string;
+        dept: string;
+        questionType: string;
+        uri: string;
+    }
+}
+
+
 export interface BasePQListProps {
     pqs: BasePQProps[];
 }
@@ -105,4 +122,8 @@ export interface MembersProps {
 
 export interface MemberListProps {
     members: MembersProps[];
+}
+
+export interface PQListPageProps extends BasePQListProps {
+    title: string;
 }

@@ -22,8 +22,8 @@ const calculateSkip = (currentPage: number, limit: number) => {
 const HomePage: React.FC = () => {
     const [pqs, setPQs] = useState<BasePQProps[]>([]);
 
-    const [startYear, setStartYear] = useState("1900");
-    const [endYear, setEndYear] = useState("2099");
+    const [startYearParam, setStartYearParam] = useState("1900");
+    const [endYearParam, setEndYearParam] = useState("2099");
     const [memberParam, setMemberParam] = useState("");
 
     // Pagination Logic
@@ -43,13 +43,16 @@ const HomePage: React.FC = () => {
         console.log("Applying Filters");
         if(member !== "" && year !== "") {
             setMemberParam(member);
-            setStartYear(year);
-            setEndYear(year);
+            setStartYearParam(year);
+            setEndYearParam(year);
+            setCurrentPage(1);
         }  else if(member !== "") {
             setMemberParam(member);
+            setCurrentPage(1);
         } else if(year !== "") {
-            setStartYear(year);
-            setEndYear(year);
+            setStartYearParam(year);
+            setEndYearParam(year);
+            setCurrentPage(1);
         }
     };
 
@@ -57,12 +60,12 @@ const HomePage: React.FC = () => {
     useEffect(() => {
         const skip = calculateSkip(currentPage, limit);
         console.log(`Fetching PQ page ${currentPage}`);
-        fetchPQsWithParams(skip, limit, startYear, endYear, memberParam)
+        fetchPQsWithParams(skip, limit, startYearParam, endYearParam, memberParam)
         .then((response) => {
             setPQs(response.data.results);
             setResultCount(response.data.head.counts.resultCount);
         });
-    }, [currentPage, startYear, endYear, memberParam]);
+    }, [currentPage, startYearParam, endYearParam, memberParam]);
 
 
     

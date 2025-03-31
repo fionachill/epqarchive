@@ -1,0 +1,40 @@
+import React, { useState } from 'react';
+import Header from '../header';
+import PQList from '../pqList';
+import FilterBar from '../filterBar';
+import Paginate from '../paginate';
+import Container from 'react-bootstrap/Container';
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import { PQListPageProps } from '../../types/interfaces';
+
+
+const PQListPageTemplate: React.FC<PQListPageProps> = ({pqs, title, handleChange }) => {
+
+    return (
+        <>
+            <Header />
+            <Container fluid>
+                <Row>
+                    <FilterBar
+                        onApplyFilters={handleChange}
+                        />
+                </Row>
+                <Row>
+                    <Col>
+                        <PQList pqs={pqs}></PQList> 
+                    </Col>    
+                </Row>
+                <Paginate 
+                    resultCount={resultCount}
+                    limit={limit}
+                    currentPage={currentPage}
+                    onPageChange={changePage}
+                    >
+                </Paginate>
+            </Container>
+        </>
+    );
+}
+
+export default PQListPageTemplate;

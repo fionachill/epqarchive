@@ -20,12 +20,6 @@ const Header: React.FC = () => {
                     />{' '}
                     ePQ
                 </Navbar.Brand>
-                <Nav className="justify-content-flex-start">
-                    <Nav.Link href="/">Home</Nav.Link>
-                </Nav>
-                <Nav className="justify-content-flex-end">
-                    <Nav.Link href="/about">About</Nav.Link>
-                </Nav>
                 <Form className="d-flex">
                   <Form.Control
                     type="search"
@@ -35,6 +29,12 @@ const Header: React.FC = () => {
                   />
                 <Button variant="outline-secondary">Search</Button>
                 </Form>
+                <Nav className="justify-content-end">
+                    <Nav.Link href="/">Home</Nav.Link>
+                    <Nav.Link href="/about">About</Nav.Link>
+                    <Nav.Link href="/register">Register</Nav.Link>
+                    <Nav.Link href="/login">Login</Nav.Link>
+                </Nav>
             </Container>
         </Navbar>
     );

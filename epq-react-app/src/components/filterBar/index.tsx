@@ -3,18 +3,9 @@ import Form from 'react-bootstrap/Form';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
-import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
-import Tooltip from 'react-bootstrap/Tooltip';
 import { Typeahead, withAsync} from 'react-bootstrap-typeahead';
 import { fetchMembers} from '../../api/pq-api';
 const AsyncTypeahead = withAsync(Typeahead);
-
-
-const renderTooltip = (props) => (
-    <Tooltip id="typeahead-tooltip" {...props}>
-        Return PQs asked by Dáil members 
-    </Tooltip>
-);
 
 
 interface FilterBarProps {
@@ -34,7 +25,7 @@ const currentYear = new Date().getFullYear();
 const FilterBar: React.FC<FilterBarProps> = ({ onApplyFilters }) => {
     const [yearOption, setYearOption] = useState("");
     const [memberOption, setMemberOption] = useState("");    
-
+    const [optionSelected, setOptionSelected] = useState(false);
 
     // These options are for populating the async typeahead 
     const [apiMembers, setApiMembers] = useState<memberList[]>([]);
@@ -68,19 +59,22 @@ const FilterBar: React.FC<FilterBarProps> = ({ onApplyFilters }) => {
         if(yearOption !== "" || memberOption !== "") {
             console.log(`Year: ${yearOption} Member: ${memberOption} being passed to parent`)
             onApplyFilters({year: yearOption, member: memberOption});
+            setOptionSelected(false);
         } 
     };
 
     const handleYearChange = (e: ChangeEvent<HTMLSelectElement>) => {
         setYearOption((e.target.value));
+        setOptionSelected(true);
         console.log(yearOption);
     };
 
-    const handleMemberChange = async(selected) => {
+    const handleMemberChange = async(selected: Array<memberList>) => {
         if (selected.length == 1) {
             const uri = selected[0].uri;
             console.log(uri);
             setMemberOption(uri);
+            setOptionSelected(true);
         } else if(selected.length === 0) {
             setMemberOption("");
         } 
@@ -111,7 +105,7 @@ const FilterBar: React.FC<FilterBarProps> = ({ onApplyFilters }) => {
                         onSearch={handleSearch}
                         options={apiMembers}
                         onChange={(selected) => handleMemberChange(selected)}
-                        placeholder="Search by Dáil member"
+                        placeholder="Questioning TD"
                     />
                 </Col>
                 <Col xs="auto">
@@ -127,7 +121,7 @@ const FilterBar: React.FC<FilterBarProps> = ({ onApplyFilters }) => {
                     </Form.Select>
                 </Col>
                 <Col xs="auto">
-                    <Button variant="outline-info" size="sm" onClick={handleSubmit}>
+                    <Button variant="outline-info" size="sm" onClick={handleSubmit} disabled={!optionSelected}>
                         Apply filters
                     </Button>
                 </Col>
