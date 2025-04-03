@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React from "react";
 import Header from "../components/header";
 import Container from "react-bootstrap/Container";
 import Button from "react-bootstrap/Button";
@@ -9,6 +9,7 @@ import Col from "react-bootstrap/Col";
 import Card from "react-bootstrap/Card";
 import bcrypt from "bcryptjs";
 import axios from 'axios';
+import { redirect } from "react-router-dom";
 
 interface regForm {
     email: string;
@@ -29,7 +30,7 @@ const RegistrationPage: React.FC = () => {
             alert("Passwords do not match. Please try again.");
             return;
         } else if (data.password.length < 8) {
-            alert("Password must be at leas 8 characters long.");
+            alert("Password must be at least 8 characters long.");
             return;
         } else {
             alert("Registration successful! You can now log in.");
@@ -42,6 +43,7 @@ const RegistrationPage: React.FC = () => {
                     password: hash,
                 }).then((response) => {
                     console.log(response.data);
+                    return redirect("/");
                 })
             } catch (err) {
                 console.error(err);
@@ -49,10 +51,6 @@ const RegistrationPage: React.FC = () => {
         }
         console.log(`Submitted: `, data);
     };
-
-    useEffect(() => {
-        
-    })
 
 
     return (

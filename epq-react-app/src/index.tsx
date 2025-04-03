@@ -7,7 +7,7 @@ import PQDetailPage from './pages/pqDetailPage';
 import AboutPage from './pages/aboutPage';   
 import "./index.css";
 import RegistrationPage from './pages/registrationPage';
-
+import LoginPage from './pages/loginPage';
 
 const App = () => {
     return (
@@ -16,7 +16,7 @@ const App = () => {
                 <Route path ="/" element={<HomePage />} />
                 <Route path="/about" element={<AboutPage />} />
                 <Route path="/register" element={<RegistrationPage />} />
-                 
+                <Route path="/login" element={<LoginPage />} />
                 <Route path ="/pqs/:id" element={<PQDetailPage />} />
             </Routes>
         </BrowserRouter>
