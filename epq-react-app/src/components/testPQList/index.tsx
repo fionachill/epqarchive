@@ -2,11 +2,11 @@ import React from 'react';
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
-import { BasePQListProps } from '../../types/interfaces';
+import { TestPQListProps } from '../../types/interfaces';
 import { Link } from "react-router-dom";
 
 
-const PQList: React.FC<BasePQListProps> = ({pqs}) => {
+const PQList: React.FC<TestPQListProps> = ({pqs}) => {
 
 
     return (

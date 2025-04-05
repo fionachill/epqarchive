@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { encodeUri } from "../utils/utilities.ts";
 
 // This is the function for calling the local test data from the backend API
 export const fetchSamplePQs = async () => {
@@ -6,7 +7,7 @@ export const fetchSamplePQs = async () => {
     .then((res) => res.data);
 };
 
-// This function is called in the Home Page component to retrieve the list of PQs
+// This function is called in the Home Page component to retrieve the first 10 PQs
 export const fetchPQs = async () => {
     return axios.get(
         `https://api.oireachtas.ie/v1/questions?limit=10&qtype=oral,written`)
@@ -26,12 +27,30 @@ export const fetchPQsPage = async (skip: number, limit: number) => {
     return response;
 };
 
+const pqListInstance = axios.create({
+    baseURL: `https://api.oireachtas.ie/v1/questions?`
+});
 
-// Function to retrieve paginated data with Date filter turned on
-export const fetchFilteredPQs = async (skip: number, limit: number, year: number, member: string) => {
-    const response = await axios.get(`https://api.oireachtas.ie/v1/questions?date_start=${year}-01-01&date_end=${year}-12-31skip=${skip}&limit=${limit}&qtype=oral,written&member_id=${member}`);
-    return response;
-};
+
+pqListInstance.interceptors.response.use(response => {
+    if(response && Array.isArray(response.data.results)){
+        response.data.results = response.data.results.map(result => ({
+            id: encodeUri(result.question.uri),
+            question: {
+                date: result.question.date,
+                xml: result.question.debateSection.formats.xml.uri,
+                topic: result.question.debateSection.showAs,
+                questionText: result.question.showAs,
+                td: result.question.by.showAs,
+                tdUri: result.question.by.uri,
+                dept: result.question.to.showAs,
+                questionType: result.question.questionType,
+                uri: result.question.uri
+            }}))
+        }
+        // console.log(response.data.results);
+        return response;
+    });
 
 // Function to retrieve paginated data with date/member params - different axios call
 export const fetchPQsWithParams = async (skip: number, limit: number, startYear: string, endYear: string, memberParam: string) => {
@@ -43,13 +62,41 @@ export const fetchPQsWithParams = async (skip: number, limit: number, startYear:
         qtype: `oral,written`,
         member_id: memberParam
     }
-    const response = await axios.get(`https://api.oireachtas.ie/v1/questions?`, {
+    const response = await pqListInstance.get(`https://api.oireachtas.ie/v1/questions?`, {
         params: {
             ...params
         }
     });
     return response;
 };
+
+// Function to retrieve PQs with a search query - no extra params
+export const fetchAllPQs = async() => {
+    const allPQs = [];
+    const response = await axios.get(`https://api.oireachtas.ie/v1/questions?limit=10000&qtype=oral,written`);
+    if (response.status !== 200) {
+        console.log("Unable to fetch PQs.");
+        return;
+    } else {
+        for(let i = 0; i < response.data.results.length; i++) {
+            const question = response.data.results[i].question;
+            const pq = { 
+                date: question.date,
+                xml: question.debateSection.formats.xml.uri,
+                topic: question.debateSection.showAs,
+                questionText: question.showAs,
+                td: question.by.showAs,
+                tdUri: question.by.uri,
+                dept: question.to.showAs,
+                questionType: question.questionType,
+                uri: question.uri,
+            };
+            allPQs.push(pq);
+        };
+        return allPQs;   
+    }
+};
+
 
 
 
@@ -59,6 +106,18 @@ export const fetchPQData = async (uri: string) => {
     return await axios.get(`https://api.oireachtas.ie/v1/questions?qtype=oral,written&question_id=${uri}`)
     .then((res) => res.data.results[0]);
 };
+
+
+
+export const fetchOnePQ = async (uri: string) => {
+    const response = await pqListInstance.get(`https://api.oireachtas.ie/v1/questions?`, {
+        params: {
+            question_id: uri
+        }
+    });
+    return response;
+};
+
 
 export const fetchXML = async (uri: string) => {
     return await axios.get(`http://localhost:3000/api/fetch-xml?url=${uri}`)

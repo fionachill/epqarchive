@@ -53,6 +53,10 @@ export interface BasePQListProps {
     pqs: BasePQProps[];
 }
 
+export interface TestPQListProps {
+    pqs: BasePQPropsShort[];
+}
+
 export interface HomePageProps {
     page?: number;
     head: {
