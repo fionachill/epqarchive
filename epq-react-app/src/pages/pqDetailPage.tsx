@@ -25,10 +25,6 @@ const PQDetailPage: React.FC = () => {
         return Base64.decode(id);
     };
 
-    const handleSearch = (query: string) => {
-        console.log("Searching for " + query);
-    };
-
    
     useEffect(() => {
         console.log("Fetching PQ");
@@ -36,7 +32,7 @@ const PQDetailPage: React.FC = () => {
             const uri = decodeId(id);
             fetchOnePQ(uri)
             .then((response) => {
-                console.log(response.data.results);
+                // console.log(response.data.results);
                 const pq = response.data.results[0];
                 console.log("pq data:" + pq);
                 setPQ(pq);
@@ -61,9 +57,7 @@ const PQDetailPage: React.FC = () => {
 
     return (
         <>
-            <Header
-                onApplySearch={handleSearch}
-            />
+            <Header/>
             <Container fluid>
                 <Row>
                     { pq ? (

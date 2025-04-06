@@ -21,6 +21,10 @@ interface memberList {
 
 const currentYear = new Date().getFullYear();
 
+const yearList: number[] = [];
+for (let i = currentYear; i >=  1990; i--) {
+    yearList.push(i);
+};
 
 const FilterBar: React.FC<FilterBarProps> = ({ onApplyFilters }) => {
     const [yearOption, setYearOption] = useState("");
@@ -31,10 +35,7 @@ const FilterBar: React.FC<FilterBarProps> = ({ onApplyFilters }) => {
     const [apiMembers, setApiMembers] = useState<memberList[]>([]);
     const [isLoading, setIsLoading] = useState(false);
 
-    const yearList = [];
-    for (let i = currentYear; i >=  1990; i--) {
-        yearList.push(i);
-    };
+
 
 
     const handleSearch = (query: string) => {
@@ -42,14 +43,9 @@ const FilterBar: React.FC<FilterBarProps> = ({ onApplyFilters }) => {
         console.log("Searching for: " + query);
         fetchMembers(query)
         .then((response) => {
-            const results = response.data.results;
-            const memberResults: memberList[] = [];
-            results.forEach(results => {
-                const fullName = results._source.member.fullName;
-                const uri = results._source.member.uri;
-                memberResults.push({fullName, uri});
-            });
-            setApiMembers(memberResults);
+            console.log(response.data.results);
+            setApiMembers(response.data.results);
+            console.log(apiMembers);
             setIsLoading(false);
         });
     };
@@ -100,7 +96,7 @@ const FilterBar: React.FC<FilterBarProps> = ({ onApplyFilters }) => {
                         ignoreDiacritics={false}
                         id="member-search"
                         isLoading={isLoading}
-                        labelKey="fullName"
+                        labelKey={"fullName"}
                         minLength={3}
                         onSearch={handleSearch}
                         options={apiMembers}

@@ -27,6 +27,8 @@ export const fetchPQsPage = async (skip: number, limit: number) => {
     return response;
 };
 
+
+// Home Page functions - retrieve the API data and transform it into a better format 
 const pqListInstance = axios.create({
     baseURL: `https://api.oireachtas.ie/v1/questions?`
 });
@@ -48,7 +50,6 @@ pqListInstance.interceptors.response.use(response => {
                 uri: result.question.uri
             }}))
         }
-        // console.log(response.data.results);
         return response;
     });
 
@@ -72,42 +73,18 @@ export const fetchPQsWithParams = async (skip: number, limit: number, startYear:
 
 // Function to retrieve PQs with a search query - no extra params
 export const fetchAllPQs = async() => {
-    const allPQs = [];
-    const response = await axios.get(`https://api.oireachtas.ie/v1/questions?limit=10000&qtype=oral,written`);
-    if (response.status !== 200) {
-        console.log("Unable to fetch PQs.");
-        return;
-    } else {
-        for(let i = 0; i < response.data.results.length; i++) {
-            const question = response.data.results[i].question;
-            const pq = { 
-                date: question.date,
-                xml: question.debateSection.formats.xml.uri,
-                topic: question.debateSection.showAs,
-                questionText: question.showAs,
-                td: question.by.showAs,
-                tdUri: question.by.uri,
-                dept: question.to.showAs,
-                questionType: question.questionType,
-                uri: question.uri,
-            };
-            allPQs.push(pq);
-        };
-        return allPQs;   
-    }
+    const response = await pqListInstance.get(`https://api.oireachtas.ie/v1/questions?`, {
+        params: {
+            limit: 100,
+        }
+    });
+    return response;
 };
 
 
 
 
 // These functions are used in the PQDetailPage component together to retrieve data 
-
-export const fetchPQData = async (uri: string) => {
-    return await axios.get(`https://api.oireachtas.ie/v1/questions?qtype=oral,written&question_id=${uri}`)
-    .then((res) => res.data.results[0]);
-};
-
-
 
 export const fetchOnePQ = async (uri: string) => {
     const response = await pqListInstance.get(`https://api.oireachtas.ie/v1/questions?`, {
@@ -124,7 +101,27 @@ export const fetchXML = async (uri: string) => {
     .then((res) => res.data);
 };
 
+// This API call is used with the filter typeahead to populate the options with a list of Dáil members
+
+const memberInstance = axios.create({
+    baseURL: `https://api.oireachtas.ie/v1`
+});
+
+memberInstance.interceptors.response.use(response => {
+    if(response && Array.isArray(response.data.results)){
+        response.data.results = response.data.results.map(result => ({
+                fullName: result._source.member.fullName,
+                uri: result._source.member.uri
+        }))
+    }
+    return response;
+});
+
 export const fetchMembers = async (memberSearch: string) => {
-    const response = await axios.get(`https://api.oireachtas.ie/v1/members?fuzzy_name_search=${memberSearch}`);
+    const response = await memberInstance.get(`/members?`, {
+        params: {
+            fuzzy_name_search: memberSearch
+        }
+    });
     return response;
 };

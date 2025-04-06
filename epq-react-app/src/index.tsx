@@ -8,6 +8,7 @@ import AboutPage from './pages/aboutPage';
 import "./index.css";
 import RegistrationPage from './pages/registrationPage';
 import LoginPage from './pages/loginPage';
+import SearchResultsPage from './pages/searchResultsPage';
 
 const App = () => {
     return (
@@ -18,6 +19,7 @@ const App = () => {
                 <Route path="/register" element={<RegistrationPage />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path ="/pqs/:id" element={<PQDetailPage />} />
+                <Route path="/search/:queryText" element={<SearchResultsPage />} />
             </Routes>
         </BrowserRouter>
     );

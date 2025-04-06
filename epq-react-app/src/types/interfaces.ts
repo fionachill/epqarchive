@@ -50,7 +50,7 @@ export interface BasePQPropsShort {
 
 
 export interface BasePQListProps {
-    pqs: BasePQProps[];
+    pqs: BasePQPropsShort[];
 }
 
 export interface TestPQListProps {

@@ -7,7 +7,6 @@ import { useForm } from "react-hook-form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Card from "react-bootstrap/Card";
-import bcrypt from "bcryptjs";
 import axios from 'axios';
 import { redirect } from "react-router-dom";
 
@@ -17,7 +16,7 @@ interface regForm {
     reenterpassword: string;
 };
 
-const salt = bcrypt.genSaltSync(10);
+
 
 
 const RegistrationPage: React.FC = () => {
@@ -33,14 +32,12 @@ const RegistrationPage: React.FC = () => {
             alert("Password must be at least 8 characters long.");
             return;
         } else {
-            alert("Registration successful! You can now log in.");
             try {
-                const hash = bcrypt.hashSync(data.password, salt);
-                console.log(hash);
                 const email = data.email;
+                const password = data.password;
                 await axios.post(`http://localhost:3000/users`, {
                     email: email,
-                    password: hash,
+                    password: password,
                 }).then((response) => {
                     console.log(response.data);
                     return redirect("/");

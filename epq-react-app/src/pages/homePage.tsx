@@ -26,7 +26,6 @@ const HomePage: React.FC = () => {
     const [endYearParam, setEndYearParam] = useState("2099");
     const [memberParam, setMemberParam] = useState("");
 
-    const [searchQuery, setSearchQuery] = useState("");
 
     // Pagination Logic
     const [currentPage, setCurrentPage] = useState<number>(1);
@@ -38,7 +37,7 @@ const HomePage: React.FC = () => {
     const changePage = (pageNum: number) => 
         setCurrentPage(pageNum);
 
-    // Function passed to filter bar
+    // Function passed to filter bar component
     const handleChange = (options) => {
         const year = options.year;
         const member = options.member;
@@ -58,18 +57,7 @@ const HomePage: React.FC = () => {
         }
     };
 
-    const handleSearch = (query: string) => {
-        console.log("Searching for PQs containing: " + query);
-        if(query !== "") {
-            setStartYearParam("1900");
-            setEndYearParam("2099");
-            setMemberParam("");
-            setCurrentPage(1);
-            setSearchQuery(query);
-        }
-    };
-
-
+    // Fetching PQs with pagination and filters
     useEffect(() => {
         const skip = calculateSkip(currentPage, limit);
         console.log(`Fetching PQ page ${currentPage}`);
@@ -81,26 +69,10 @@ const HomePage: React.FC = () => {
     }, [currentPage, startYearParam, endYearParam, memberParam]);
             
 
-
-
-    // Second useEffect to handle the search function
-    // useEffect(() => {
-
-    // })
-
-
-
-
-    // const displayedPQs = pqs
-    // .filter((p: BasePQProps) => {
-    //     return p.question.showAs.toLowerCase().search(searchQuery.toLowerCase()) !== -1;
-    // });
     
     return (
         <>
-            <Header 
-                onApplySearch={handleSearch}
-            />
+            <Header />
             <Container fluid>
                 <Row>
                     <FilterBar

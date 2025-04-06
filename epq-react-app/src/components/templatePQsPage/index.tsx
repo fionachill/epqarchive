@@ -9,7 +9,14 @@ import Col from "react-bootstrap/Col";
 import { PQListPageProps } from '../../types/interfaces';
 
 
-const PQListPageTemplate: React.FC<PQListPageProps> = ({pqs, title, handleChange }) => {
+const PQListPageTemplate: React.FC<PQListPageProps> = ({pqs, handleChange }) => {
+        // Pagination Logic
+        const [currentPage, setCurrentPage] = useState<number>(1);
+        const [resultCount, setResultCount] = useState<number>(0);
+        const limit = 10;
+
+        const changePage = (pageNum: number) => 
+            setCurrentPage(pageNum);
 
     return (
         <>
