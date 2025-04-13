@@ -95,7 +95,7 @@ const RegistrationPage: React.FC = () => {
                                             Please ensure passwords match
                                         </Form.Control.Feedback>
                                     </Form.Group>
-                                    <Button variant="info" type="submit">
+                                    <Button variant="warning" type="submit">
                                         Register
                                     </Button>
                                     <Row>

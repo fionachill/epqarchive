@@ -6,7 +6,7 @@ const SpeechList: React.FC<SpeechListProps> = ({speeches}) => {
 
     return (
         <>
-            <Accordion defaultActiveKey="0">
+            <Accordion defaultActiveKey="0" flush>
                 { speeches && speeches.map((s) => (
                     <Accordion.Item key={s.eId} eventKey="0">
                         <Accordion.Header>

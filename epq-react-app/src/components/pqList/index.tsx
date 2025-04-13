@@ -34,7 +34,7 @@ const PQList: React.FC<BasePQListProps> = ({pqs}) => {
                                     <td>{pq.question.date}</td>
                                     <td>
                                         <Link to={`/pqs/${pq.id}`}>
-                                            <Button>More Information</Button>
+                                            <Button variant="warning">More Information</Button>
                                         </Link>
                                     </td>    
                                 </tr>

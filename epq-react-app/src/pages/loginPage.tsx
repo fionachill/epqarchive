@@ -7,7 +7,6 @@ import { useForm } from "react-hook-form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Card from "react-bootstrap/Card";
-import bcrypt from "bcryptjs";
 import axios from 'axios';
 import { redirect } from "react-router-dom";
 
@@ -15,9 +14,6 @@ interface loginForm {
     email: string;
     password: string;
 };
-
-const salt = bcrypt.genSaltSync(10);
-
 
 const LoginPage: React.FC = () => {
 
@@ -30,15 +26,17 @@ const LoginPage: React.FC = () => {
             alert("Please enter email address.");
         } else {
             try {
-                const hash = bcrypt.hashSync(data.password, salt);
+                const password = data.password;
                 const email = data.email;
-                console.log(hash);
                 await axios.post(`http://localhost:3000/login`, {
                     email: email,
-                    password: hash,
+                    password: password,
                 }).then((response) => {
                     console.log(response.data);
-                    return redirect("/");
+                    if (response.status === 200) {
+                        console.log("Login successful");
+                        redirect("/");
+                    }
                 })
             } catch (err) {
                 console.error(err);
@@ -81,7 +79,7 @@ const LoginPage: React.FC = () => {
                                             Please provide a password
                                         </Form.Control.Feedback>
                                     </Form.Group>
-                                    <Button variant="info" type="submit">
+                                    <Button variant="warning" type="submit">
                                         Log in
                                     </Button>
                                     <Row>

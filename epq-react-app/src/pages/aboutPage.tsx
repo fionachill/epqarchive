@@ -17,7 +17,7 @@ return (
                 <Row>
                     <Col>
                         <p>ePQ is a searchable archive of Parliamentary Questions</p>
-                        <p>FAQs ?</p>
+                        <p>This application is still in development</p>
                     </Col>
                 </Row>
 

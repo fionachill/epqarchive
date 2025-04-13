@@ -117,7 +117,7 @@ const FilterBar: React.FC<FilterBarProps> = ({ onApplyFilters }) => {
                     </Form.Select>
                 </Col>
                 <Col xs="auto">
-                    <Button variant="outline-info" size="sm" onClick={handleSubmit} disabled={!optionSelected}>
+                    <Button variant="outline-success" size="sm" onClick={handleSubmit} disabled={!optionSelected}>
                         Apply filters
                     </Button>
                 </Col>
